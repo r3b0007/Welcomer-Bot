@@ -83,8 +83,8 @@ client.on('guildMemberAdd', async member => {
             { name: 'Username', value: `${member.user.tag}`, inline: true },
             { name: 'Invited By', value: inviterMention, inline: true },
             { name: 'Invite Used', value: usedInvite ? usedInvite.code : 'No invite used', inline: true },
-            { name: 'Announcements Channel', value: '<#1236472479212638250>', inline: true },
-            { name: 'Support Channel', value: '<#1236472479212638258>', inline: true }
+            { name: 'Announcements Channel', value: '<#channel-id>', inline: true },
+            { name: 'Support Channel', value: '<#channel-id>', inline: true }
         ])
         .setThumbnail(member.user.displayAvatarURL())
         .setImage(bannerUrl || null)  // Use 'null' instead of an empty string
