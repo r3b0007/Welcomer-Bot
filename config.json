@@ -1,0 +1,6 @@
+{
+    "botToken": "BOT_TOKEN",
+    "welcomeChannelId": "channel-id",
+    "autoRoleId": "role-id"
+  }
+  

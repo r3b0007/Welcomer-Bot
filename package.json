@@ -1,0 +1,17 @@
+{
+  "name": "discord-welcome-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot that sends a welcome message when a new member joins.",
+  "main": "index.js",
+  "engines": {
+    "node": "16.x"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Wick",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.15.2"
+  }
+}
