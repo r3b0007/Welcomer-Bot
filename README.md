@@ -18,3 +18,5 @@ To set up the Welcomer Bot, follow these steps:
 
 
     npm install
+
+    enjo
