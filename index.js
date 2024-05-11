@@ -51,12 +51,25 @@ client.on('inviteDelete', async invite => {
 
 client.on('guildMemberAdd', async member => {
     const welcomeChannel = member.guild.channels.cache.get(config.welcomeChannelId);
-    const role = member.guild.roles.cache.get(config.autoRoleId);
+    
+    // Check if the new member is a bot
+    if (member.user.bot) {
+        const botRole = member.guild.roles.cache.get(config.botRoleId);
+        if (botRole) {
+            member.roles.add(botRole).catch(console.error);
+            console.log(`Bot ${member.user.tag} has been assigned the bot role.`);
+        } else {
+            console.log('Bot role not found.');
+        }
+        return; // Stop further execution for bots
+    }
 
+    // Existing logic for normal users
+    const role = member.guild.roles.cache.get(config.autoRoleId);
     if (role) {
         member.roles.add(role).catch(console.error);
     } else {
-        console.log('Role not found');
+        console.log('Role not found for user.');
     }
 
     const newInvites = await member.guild.invites.fetch();
@@ -83,8 +96,8 @@ client.on('guildMemberAdd', async member => {
             { name: 'Username', value: `${member.user.tag}`, inline: true },
             { name: 'Invited By', value: inviterMention, inline: true },
             { name: 'Invite Used', value: usedInvite ? usedInvite.code : 'No invite used', inline: true },
-            { name: 'Announcements Channel', value: '<#channel-id>', inline: true },
-            { name: 'Support Channel', value: '<#channel-id>', inline: true }
+            { name: 'Announcements Channel', value: '<#1236472479212638250>', inline: true },
+            { name: 'Support Channel', value: '<#1236472479212638258>', inline: true }
         ])
         .setThumbnail(member.user.displayAvatarURL())
         .setImage(bannerUrl || null)  // Use 'null' instead of an empty string
@@ -95,5 +108,6 @@ client.on('guildMemberAdd', async member => {
 
     invites[member.guild.id] = new Map(newInvites.map(invite => [invite.code, invite.uses]));
 });
+
 
 client.login(config.botToken);
