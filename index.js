@@ -52,24 +52,20 @@ client.on('inviteDelete', async invite => {
 client.on('guildMemberAdd', async member => {
     const welcomeChannel = member.guild.channels.cache.get(config.welcomeChannelId);
     
-    // Check if the new member is a bot
+    // Determine the appropriate role based on whether the member is a bot
+    let assignedRole;
     if (member.user.bot) {
-        const botRole = member.guild.roles.cache.get(config.botRoleId);
-        if (botRole) {
-            member.roles.add(botRole).catch(console.error);
-            console.log(`Bot ${member.user.tag} has been assigned the bot role.`);
-        } else {
-            console.log('Bot role not found.');
-        }
-        return; // Stop further execution for bots
+        assignedRole = member.guild.roles.cache.get(config.botRoleId);
+    } else {
+        assignedRole = member.guild.roles.cache.get(config.autoRoleId);
     }
 
-    // Existing logic for normal users
-    const role = member.guild.roles.cache.get(config.autoRoleId);
-    if (role) {
-        member.roles.add(role).catch(console.error);
+    // Assign the determined role
+    if (assignedRole) {
+        member.roles.add(assignedRole).catch(console.error);
+        console.log(`${member.user.tag} has been assigned the ${member.user.bot ? 'bot' : 'user'} role.`);
     } else {
-        console.log('Role not found for user.');
+        console.log('Assigned role not found.');
     }
 
     const newInvites = await member.guild.invites.fetch();
@@ -86,7 +82,9 @@ client.on('guildMemberAdd', async member => {
         console.log(`Member joined, but no matching invite was found.`);
     }
 
-    const bannerUrl = member.user.bannerURL({ dynamic: true, format: 'png', size: 1024 });
+    // Fetch user details to get the banner URL
+    const user = await client.users.fetch(member.id, { force: true });
+    const bannerUrl = user.bannerURL({ dynamic: true, format: 'png', size: 1024 });
 
     const welcomeEmbed = new EmbedBuilder()
         .setColor('#05131f')
@@ -104,10 +102,8 @@ client.on('guildMemberAdd', async member => {
         .setTimestamp();
     
     welcomeChannel.send({ embeds: [welcomeEmbed] });
-    
 
     invites[member.guild.id] = new Map(newInvites.map(invite => [invite.code, invite.uses]));
 });
-
 
 client.login(config.botToken);
